@@ -17,5 +17,8 @@ $collectionOfModels->dynamicLoad(
 
 ```
     /// add r ranks relation that gets all ranks that start with r except the user's current rank 
-    $users = $users->dynamicLoad('r_ranks', fn($m) => Rank::where('name', 'like', '%r')->where('id', '!=', $m->rank_id));
+    $users = $users->dynamicLoad(
+        'r_ranks', 
+        fn($m) => Rank::where('name', 'like', '%r')->where('id', '!=', $m->rank_id)
+        );
 ```
