@@ -12,8 +12,14 @@ $collectionOfModels->dynamicLoad(
             return RelatedModel::where('conditions', $model->conditions)->orderBy('condition');
      
         },
+
+        'relation_key', // Optional if this does not exist it will be created as an alias
+
+        'model_key' // Optional used to match the records back to the model
     );
 ```
+If relation_key and model_key are not defined they will be created 
+`model_key: {primary_key} relation_key: {model_name}_{primary_key}`
 
 ```
     /// add r ranks relation that gets all ranks that start with r except the user's current rank 
