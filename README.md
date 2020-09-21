@@ -24,7 +24,21 @@ If relation_key and model_key are not defined they will be created
 ```
     /// add r ranks relation that gets all ranks that start with r except the user's current rank 
     $users = $users->dynamicLoad(
+
         'r_ranks', 
+
         fn($m) => Rank::where('name', 'like', '%r')->where('id', '!=', $m->rank_id)
-        );
+    );
+
+   // get the latest login for user
+    $users = $users->dynamicLoad(
+
+        'latest_login', 
+
+        fn($m) => Login::where('id', '!=', $m->id)->latest()
+
+    );
+
 ```
+
+
