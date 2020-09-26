@@ -27,7 +27,7 @@ class DynamicLoad
             $query = call_user_func($subQuery, $model);
 
             if(!$this->checkIfRelationKeyExistsInQuery($query, $relation_key)) {
-                $query->addSelect($model->{$model_key} . ' as ' . $relation_key);
+                $query->addSelect(\DB::raw($model->{$model_key}. ' as ' . $relation_key));
             }
 
             $queries->push(
