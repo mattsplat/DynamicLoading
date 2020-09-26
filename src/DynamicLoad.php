@@ -5,20 +5,21 @@ namespace MattSplat\DynamicLoading;
 
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class DynamicLoad
 {
-    public function load(Collection $models, string $relation_name, Closure $subQuery, $relation_key = null, $model_key = null) : Collection
+    public function load(Collection $models, string $relation_name, Closure $subQuery, $relation_key = null, $model_key = null): Collection
     {
 
         $queries = new Collection();
-        if(!$model_key) {
+        if (!$model_key) {
             $model_key = $models->first()->getKeyName();
         }
-        if(!$relation_key) {
+        if (!$relation_key) {
             $class = class_basename($models->first());
-            $class = strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1'.'_', $class));
+            $class = strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1' . '_', $class));
             $relation_key = $class . '_' . $model_key;
         }
 
@@ -26,8 +27,8 @@ class DynamicLoad
 
             $query = call_user_func($subQuery, $model);
 
-            if(!$this->checkIfRelationKeyExistsInQuery($query, $relation_key)) {
-                $query->addSelect(\DB::raw($model->{$model_key}. ' as ' . $relation_key));
+            if (!$this->checkIfRelationKeyExistsInQuery($query, $relation_key)) {
+                $query->addSelect(\DB::raw($model->{$model_key} . ' as ' . $relation_key));
             }
 
             $queries->push(
@@ -64,8 +65,13 @@ class DynamicLoad
      */
     public function checkIfRelationKeyExistsInQuery($query, ?string $relation_key): bool
     {
-        $columns = $query->getQuery()->columns;
-        if(empty($columns)) {
+        if ($query instanceof Builder) {
+            $columns = $query->getQuery()->columns;
+        } else {
+            $columns = $query->columns;
+        }
+
+        if (empty($columns)) {
             $query->select('*');
             return false;
         }
