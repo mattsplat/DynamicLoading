@@ -1,7 +1,5 @@
 # DynamicLoading
 
-## Examples
-
 ### Basic usage
 You do not need a foreign key connecting your tables.
 
@@ -24,6 +22,9 @@ $collectionOfModels->dynamicLoad(
 If relation_key and model_key are not defined they will be created 
 `model_key: {primary_key} relation_key: {model_name}_{primary_key}`
 
+## Examples
+
+#### Ranks user doesn't have ending with 'r'
 Given the following database structure it's easy to add a relation for the current rank but not for ranks not associated with the user.
 #### users
 * id
@@ -43,6 +44,7 @@ Given the following database structure it's easy to add a relation for the curre
     );
 ```
 This would produce 1 query and add the matching ranks query as a relationship to the the collection of users.
+#### result
 ```
 $users[0] => [
         'id' => 1,
@@ -60,6 +62,14 @@ $users[0] => [
                 ]
         ]
 ]
+```
+This works by injecting the user_id in a subselect for each model and combining the subqueries with a union.
+#### query produced
+```
+select * from (select *, 1 as user_id from "ranks" where "name" like '%r' and "id" != 1) 
+        union select * from (select *, 2 as user_id from "ranks" where "name" like '%r' and "id" != 1) 
+        union select * from (select *, 3 as user_id from "ranks" where "name" like '%r' and "id" != 1) 
+        union select * from (select *, 4 as user_id from "ranks" where "name" like '%r' and "id" != 1)
 ```
 
 
