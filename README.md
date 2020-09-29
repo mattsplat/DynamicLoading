@@ -89,7 +89,7 @@ Instead we can dynamically load the just the latest login for a collection of us
 
         'latest_login', 
 
-        fn($m) => Login::where('id', '!=', $m->id)->latest()
+        fn($m) => Login::where('user_id', '!=', $m->id)->latest()->limit(1)
 
     );
 
