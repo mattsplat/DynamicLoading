@@ -1,5 +1,8 @@
 # DynamicLoading
 
+## Install
+`composer require mattsplat/dynamic-loading`
+
 ### Basic usage
 You do not need a foreign key connecting your tables.
 
