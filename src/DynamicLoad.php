@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class DynamicLoad
 {
-    public function load(Collection $models, string $relation_name, Closure $subQuery, $relation_key = null, $model_key = null): Collection
+    public function load(Collection $models, string $relation_name, Closure $subQuery, $relation_key = null, $model_key = null, $single = false): Collection
     {
 
         $queries = new Collection();
@@ -52,6 +52,10 @@ class DynamicLoad
 
         foreach ($models as $model) {
             if (isset($relations[$model->{$model_key}])) {
+
+                if($single) {
+                    $relations[$model->{$model_key}] = $relations[$model->{$model_key}]->first();
+                }
                 $model->setRelation($relation_name, $relations[$model->{$model_key}]);
             }
         }
